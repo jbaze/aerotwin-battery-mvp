@@ -1,0 +1,139 @@
+<div class="energy-charts-container">
+  <!-- Enhanced Header with Optimization Status -->
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h3 [class]="'text-xl font-semibold mb-1 flex items-center text-white'">
+        {{ getChartTitle() }}
+        <span *ngIf="isOptimized" class="ml-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse">
+          ✨ LIVE
+        </span>
+      </h3>
+      <p [class]="'text-sm text-gray-400'">
+        {{ getChartDescription() }}
+      </p>
+    </div>
+
+    <!-- Enhanced Chart Type Selector -->
+    <div [class]="'flex rounded-lg p-1 transition-all duration-300 bg-gray-800'">
+      <button
+        (click)="setActiveView('current')"
+        [class]="'px-3 py-1 text-sm rounded transition-all duration-200 ' +
+                 (activeView === 'current' ?
+                  'bg-red-600 text-white' :
+                  'text-gray-400 hover:text-white')"
+      >
+        Current
+      </button>
+      <button
+        (click)="setActiveView('optimized')"
+        [class]="'px-3 py-1 text-sm rounded transition-all duration-200 ' +
+                 (activeView === 'optimized' ?
+                  'bg-green-600 text-white' :
+                  'text-gray-400 hover:text-white')"
+      >
+        {{ isOptimized ? 'Optimized' : 'Projected' }}
+      </button>
+      <button
+        (click)="setActiveView('comparison')"
+        [class]="'px-3 py-1 text-sm rounded transition-all duration-200 ' +
+                 (activeView === 'comparison' ?
+                  'bg-teal-600 text-white' :
+                  'text-gray-400 hover:text-white')"
+      >
+        {{ isOptimized ? 'Impact' : 'Compare' }}
+      </button>
+      <button
+        (click)="setActiveView('distribution')"
+        [class]="'px-3 py-1 text-sm rounded transition-all duration-200 ' +
+                 (activeView === 'distribution' ?
+                  'bg-blue-600 text-white' :
+                  'text-gray-400 hover:text-white')"
+      >
+        Distribution
+      </button>
+    </div>
+  </div>
+
+  <!-- Transition Loading State -->
+  <div *ngIf="isTransitioning" class="bg-gray-800 border border-gray-700 rounded-xl p-8 mb-6 text-center">
+    <div class="flex items-center justify-center mb-4">
+      <div class="animate-spin rounded-full h-8 w-8 border-4 border-green-500 border-t-transparent"></div>
+    </div>
+    <h4 class="text-lg font-semibold text-green-400 mb-2">Updating Charts with AeroTwin Intelligence</h4>
+    <p class="text-green-300 text-sm">Applying optimization data to visualizations...</p>
+  </div>
+
+  <!-- Enhanced Chart Display -->
+  <div [class]="'border border-gray-700 rounded-xl p-6 transition-all duration-500 bg-gray-800'">
+
+    <!-- Chart Container -->
+    <div class="chart-container">
+      <canvas #chartCanvas class="chart-canvas"></canvas>
+    </div>
+
+    <!-- Enhanced Chart Description -->
+    <div class="mt-4 text-center">
+      <p [class]="'text-sm text-gray-400'">
+        {{ getChartDescription() }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Optimization Performance Stats (Enhanced) -->
+  <div *ngIf="activeView === 'comparison'" class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div [class]="'border border-gray-700 rounded-lg p-4 text-center transition-all duration-300 bg-gray-800'">
+      <div [class]="'text-2xl font-bold mb-1 text-green-400'">
+        {{ isOptimized ? '20.8%' : '20.8%' }}
+      </div>
+      <div [class]="'text-xs text-gray-400'">
+        {{ isOptimized ? 'Active Efficiency Boost' : 'Potential Efficiency Gain' }}
+      </div>
+      <div *ngIf="isOptimized" class="text-xs text-green-500 mt-1">✓ Applied</div>
+    </div>
+    <div [class]="'border border-gray-700 rounded-lg p-4 text-center transition-all duration-300 bg-gray-800'">
+      <div [class]="'text-2xl font-bold mb-1 text-blue-400'">
+        {{ isOptimized ? '48%' : '48%' }}
+      </div>
+      <div [class]="'text-xs text-blue-300'">
+        {{ isOptimized ? 'Grid Dependency Reduced' : 'Grid Reduction Potential' }}
+      </div>
+      <div *ngIf="isOptimized" class="text-xs text-blue-500 mt-1">✓ Active</div>
+    </div>
+    <div [class]="'border border-gray-700 rounded-lg p-4 text-center transition-all duration-300 bg-gray-800'">
+      <div [class]="'text-2xl font-bold mb-1 text-yellow-400'">
+        {{ isOptimized ? '£949' : '£949' }}
+      </div>
+      <div [class]="'text-xs text-yellow-300'">
+        {{ isOptimized ? 'Annual Savings Realized' : 'Annual Savings Potential' }}
+      </div>
+      <div *ngIf="isOptimized" class="text-xs text-yellow-500 mt-1">✓ Earning</div>
+    </div>
+  </div>
+
+  <!-- Enhanced AeroTwin Optimization Insights Panel -->
+  <div *ngIf="isOptimized && getOptimizationInsights().length > 0"
+       class="mt-6 bg-gradient-to-r from-green-900 via-teal-900 to-blue-900 border border-green-600 rounded-xl p-6 animate-fade-in">
+    <h4 class="text-lg font-semibold text-white mb-4 flex items-center">
+      <svg class="w-5 h-5 text-green-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+      </svg>
+      Live AeroTwin Intelligence Insights
+      <span class="ml-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full animate-pulse">ACTIVE</span>
+    </h4>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div *ngFor="let insight of getOptimizationInsights()"
+           class="bg-gray-800 rounded-lg p-4 border border-green-600">
+        <div class="flex items-center mb-2">
+          <span class="text-2xl mr-2">{{ insight.icon }}</span>
+          <h5 [class]="'font-semibold text-sm ' + insight.color">{{ insight.title }}</h5>
+        </div>
+        <p class="text-xs text-gray-300 mb-2">{{ insight.description }}</p>
+        <div class="flex items-center justify-between">
+          <span [class]="'text-xs font-bold ' + insight.color">{{ insight.improvement }}</span>
+          <span class="text-xs text-green-400">✓ Active</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

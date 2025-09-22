@@ -1,0 +1,43 @@
+<div class="metrics-grid-container">
+  <!-- Section Header -->
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h3 class="text-xl font-semibold text-white mb-1">Energy Metrics</h3>
+      <p class="text-sm text-gray-400">Real-time system performance overview</p>
+    </div>
+
+    <!-- Last Updated Indicator -->
+    <div class="flex items-center space-x-2 text-xs text-gray-500">
+      <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+      <span>Live Data</span>
+    </div>
+  </div>
+
+  <!-- Metrics Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <ng-container *ngIf="metrics$ | async as metrics">
+      <app-metric-card
+        *ngFor="let metric of metrics; trackBy: trackByMetricId; let i = index"
+        [metric]="metric"
+        [isAnimated]="true"
+        class="metric-card"
+        [style.animation-delay.s]="i * 0.1">
+      </app-metric-card>
+    </ng-container>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="!(metrics$ | async)" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let i of [1,2,3,4,5,6]"
+         class="bg-gray-800 border border-gray-700 rounded-xl p-6 animate-pulse">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-9 h-9 bg-gray-700 rounded-lg"></div>
+          <div class="w-24 h-4 bg-gray-700 rounded"></div>
+        </div>
+      </div>
+      <div class="w-16 h-8 bg-gray-700 rounded mb-3"></div>
+      <div class="w-full h-3 bg-gray-700 rounded"></div>
+    </div>
+  </div>
+</div>

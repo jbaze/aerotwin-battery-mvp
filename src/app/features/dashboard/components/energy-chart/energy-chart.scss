@@ -1,0 +1,87 @@
+
+.energy-charts-container {
+  .chart-container {
+    position: relative;
+    height: 400px;
+    width: 100%;
+
+    .chart-canvas {
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 8px;
+      transition: all 0.5s ease-in-out;
+    }
+  }
+
+  // Optimization-specific enhancements
+  .bg-gradient-to-br {
+    animation: optimizedGlow 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes optimizedGlow {
+    from {
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
+    }
+    to {
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.2);
+    }
+  }
+
+  // Enhanced button styling
+  button {
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  // Smooth transitions for optimization states
+  .transition-all {
+    transition-property: all;
+    transition-duration: 0.5s;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  // Animation for new insights panel
+  .animate-fade-in {
+    animation: slideInUp 0.8s ease-out;
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  // Pulse effect for live indicators
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+
+  // Responsive design
+  @media (max-width: 768px) {
+    .chart-container {
+      height: 300px;
+    }
+
+    .grid-cols-3 {
+      grid-template-columns: 1fr;
+    }
+  }
+}

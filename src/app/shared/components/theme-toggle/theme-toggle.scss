@@ -1,0 +1,35 @@
+
+:host {
+  display: inline-block;
+}
+
+button {
+  position: relative;
+  overflow: hidden;
+
+  &:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: rgb(59 130 246 / 0.5);
+    ring-offset: 2px;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.animate-ping {
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}

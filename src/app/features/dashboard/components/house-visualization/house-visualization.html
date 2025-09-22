@@ -1,0 +1,263 @@
+<div class="house-visualization-container">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h3 class="text-lg font-semibold text-white mb-1">Smart House Energy System</h3>
+      <p class="text-sm text-gray-400">Real-time energy flow visualization</p>
+    </div>
+
+    <!-- Live Status -->
+    <div class="flex items-center space-x-4">
+      <div class="flex items-center space-x-2 text-xs">
+        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+        <span class="text-gray-400">Live Data</span>
+      </div>
+      <div class="text-xs text-gray-500">
+        Updated {{ houseData.timestamp | date:'HH:mm:ss' }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Main House Visualization -->
+  <div class="house-container bg-gray-900 border border-gray-700 rounded-xl overflow-hidden mb-6 relative">
+    <!-- House Image Background -->
+    <div class="house-image-container relative">
+      <img
+        src="images/house-visualization.jpg"
+        alt="Smart House with Solar Panels"
+        class="w-full h-auto object-contain"
+        style="min-height: 400px; max-height: 500px;"
+      />
+
+      <!-- Animated Energy Flow Overlay -->
+      <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+        <!-- Energy Flow Paths -->
+        <defs>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+
+        <!-- Flow Lines -->
+        <g *ngFor="let flow of energyFlows">
+          <line
+            *ngIf="flow.isActive"
+            [attr.x1]="flow.from.x"
+            [attr.y1]="flow.from.y"
+            [attr.x2]="flow.to.x"
+            [attr.y2]="flow.to.y"
+            [attr.stroke]="flow.color"
+            stroke-width="0.5"
+            opacity="0.6"
+            filter="url(#glow)"
+            class="flow-line">
+          </line>
+
+          <!-- Animated Particles -->
+          <g *ngIf="flow.isActive">
+            <circle
+              *ngFor="let particle of flow.particles; trackBy: trackByParticle"
+              [attr.cx]="particle.x"
+              [attr.cy]="particle.y"
+              r="0.8"
+              [attr.fill]="flow.color"
+              opacity="0.9"
+              filter="url(#glow)"
+              class="energy-particle">
+            </circle>
+          </g>
+        </g>
+
+        <!-- Energy Source Labels -->
+        <g class="energy-labels">
+          <!-- Solar Label -->
+          <circle cx="50" cy="25" r="3" fill="#fbbf24" opacity="0.8" filter="url(#glow)"/>
+          <text x="50" y="20" text-anchor="middle" fill="#fbbf24" font-size="3" font-weight="bold">SOLAR</text>
+
+          <!-- Battery Label -->
+          <circle cx="85" cy="75" r="3" fill="#10b981" opacity="0.8" filter="url(#glow)"/>
+          <text x="85" y="82" text-anchor="middle" fill="#10b981" font-size="3" font-weight="bold">BATTERY</text>
+
+          <!-- House Label -->
+          <circle cx="50" cy="55" r="3" fill="#06b6d4" opacity="0.8" filter="url(#glow)"/>
+          <text x="50" y="50" text-anchor="middle" fill="#06b6d4" font-size="3" font-weight="bold">HOME</text>
+        </g>
+      </svg>
+
+      <!-- Status Overlays -->
+      <div class="absolute top-4 right-4 bg-gray-900/90 backdrop-blur border border-gray-600 rounded-lg p-4">
+        <h4 class="text-xs font-medium text-gray-300 mb-3">Live Energy Flows</h4>
+        <div class="space-y-2 text-xs">
+          <div class="flex items-center space-x-2">
+            <div
+              class="w-2 h-2 rounded-full"
+              [class]="houseData.solarProduction > 0 ? 'bg-yellow-400 animate-pulse' : 'bg-gray-500'">
+            </div>
+            <span class="text-gray-300">Solar: {{ houseData.solarProduction }}kW</span>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <div
+              class="w-2 h-2 rounded-full"
+              [class]="houseData.batteryStatus === 'charging' ? 'bg-green-400 animate-pulse' : houseData.batteryStatus === 'discharging' ? 'bg-orange-400 animate-pulse' : 'bg-gray-500'">
+            </div>
+            <span class="text-gray-300">Battery: {{ houseData.batteryStatus }}</span>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <div
+              class="w-2 h-2 rounded-full"
+              [class]="houseData.gridConnection === 'importing' ? 'bg-red-400 animate-pulse' : houseData.gridConnection === 'exporting' ? 'bg-green-400 animate-pulse' : 'bg-gray-500'">
+            </div>
+            <span class="text-gray-300">Grid: {{ houseData.gridConnection }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Battery Level Indicator -->
+      <div class="absolute bottom-4 right-4 bg-gray-900/90 backdrop-blur border border-gray-600 rounded-lg p-3">
+        <div class="flex items-center space-x-3">
+          <svg [class]="'w-6 h-6 ' + getBatteryStatusColor()" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="getBatteryStatusIcon()"></path>
+          </svg>
+          <div>
+            <div class="text-lg font-bold text-white">{{ houseData.batteryLevel }}%</div>
+            <div class="text-xs text-gray-400">Battery Level</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Real-time Data Dashboard -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Solar Production -->
+    <div class="bg-gray-800 border border-gray-700 rounded-xl p-6 data-panel fade-in">
+      <h4 class="text-lg font-medium text-white mb-4 flex items-center">
+        <svg class="w-5 h-5 text-yellow-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+        </svg>
+        Solar System
+      </h4>
+
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-300">Current Output</span>
+          <span class="text-2xl font-bold text-yellow-400">{{ houseData.solarProduction }} kW</span>
+        </div>
+
+        <div class="w-full bg-gray-700 rounded-full h-2">
+          <div
+            class="bg-gradient-to-r from-yellow-500 to-yellow-400 h-2 rounded-full transition-all duration-1000 ease-out"
+            [style.width.%]="(houseData.solarProduction / 8) * 100">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <span class="text-gray-400">Status</span>
+            <p [class]="houseData.solarProduction > 0 ? 'text-green-400 font-medium' : 'text-gray-500 font-medium'">
+              {{ houseData.solarProduction > 0 ? 'Producing' : 'Offline' }}
+            </p>
+          </div>
+          <div>
+            <span class="text-gray-400">Efficiency</span>
+            <p class="text-green-400 font-medium">{{ (houseData.solarProduction / 8 * 100).toFixed(0) }}%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Battery System -->
+    <div class="bg-gray-800 border border-gray-700 rounded-xl p-6 data-panel fade-in">
+      <h4 class="text-lg font-medium text-white mb-4 flex items-center">
+        <svg [class]="'w-5 h-5 mr-2 ' + getBatteryStatusColor()" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="getBatteryStatusIcon()"></path>
+        </svg>
+        Battery System
+      </h4>
+
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-300">Charge Level</span>
+          <span class="text-2xl font-bold text-white">{{ houseData.batteryLevel }}%</span>
+        </div>
+
+        <div class="w-full bg-gray-700 rounded-full h-2">
+          <div
+            class="h-2 rounded-full transition-all duration-1000 ease-out"
+            [class]="houseData.batteryLevel > 50 ? 'bg-gradient-to-r from-green-500 to-green-400' : houseData.batteryLevel > 20 ? 'bg-gradient-to-r from-yellow-500 to-yellow-400' : 'bg-gradient-to-r from-red-500 to-red-400'"
+            [style.width.%]="houseData.batteryLevel">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <span class="text-gray-400">Status</span>
+            <p [class]="'font-medium capitalize ' + getBatteryStatusColor()">
+              {{ houseData.batteryStatus }}
+            </p>
+          </div>
+          <div>
+            <span class="text-gray-400">Capacity</span>
+            <p class="text-white font-medium">13.5 kWh</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Home & Grid -->
+    <div class="bg-gray-800 border border-gray-700 rounded-xl p-6 data-panel fade-in">
+      <h4 class="text-lg font-medium text-white mb-4 flex items-center">
+        <svg class="w-5 h-5 text-blue-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        Home & Grid
+      </h4>
+
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-300">Home Load</span>
+          <span class="text-2xl font-bold text-blue-400">{{ houseData.homeConsumption }} kW</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <span class="text-gray-400">Grid Status</span>
+            <p [class]="'font-medium capitalize ' + getGridStatusColor()">
+              {{ houseData.gridConnection }}
+            </p>
+          </div>
+          <div>
+            <span class="text-gray-400">Self Sufficiency</span>
+            <p class="text-green-400 font-medium">{{ getSelfSufficiency().toFixed(0) }}%</p>
+          </div>
+        </div>
+
+        <div class="w-full bg-gray-700 rounded-full h-2">
+          <div
+            class="bg-gradient-to-r from-blue-500 to-blue-400 h-2 rounded-full transition-all duration-1000 ease-out"
+            [style.width.%]="getHomeConsumptionWidth()">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Instructions -->
+  <div class="mt-6 bg-gray-800 border border-gray-700 rounded-xl p-4">
+    <div class="flex items-start space-x-3">
+      <svg class="w-5 h-5 text-teal-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <div class="text-sm text-gray-300">
+        <p class="font-medium mb-1">Interactive Energy Visualization</p>
+        <p>Watch the animated energy flows showing power movement between solar panels, battery, home, and grid. The visualization updates in real-time based on current energy production and consumption patterns.</p>
+      </div>
+    </div>
+  </div>
+</div>

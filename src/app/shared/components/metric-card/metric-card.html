@@ -1,0 +1,124 @@
+<div [class]="getCardClasses()">
+
+  <!-- Simple Optimization Badge (no animation) -->
+  <div *ngIf="isOptimized" class="absolute -top-2 -right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+    ✓ OPTIMIZED
+  </div>
+
+  <!-- Header with Icon and Title -->
+  <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center space-x-3">
+      <!-- Icon (simplified, no complex styling) -->
+      <div [class]="'p-2 rounded-lg transition-colors duration-200 ' +
+                    ('bg-gray-700 group-hover:bg-gray-600') +
+                    ' ' + metric.color">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <!-- Solar Icon -->
+          <ng-container *ngIf="metric.icon === 'solar'">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </ng-container>
+
+          <!-- Home Icon -->
+          <ng-container *ngIf="metric.icon === 'home'">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </ng-container>
+
+          <!-- Battery Down Icon -->
+          <ng-container *ngIf="metric.icon === 'battery-down'">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+          </ng-container>
+
+          <!-- Battery Up Icon -->
+          <ng-container *ngIf="metric.icon === 'battery-up'">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+          </ng-container>
+
+          <!-- Grid Down Icon -->
+          <ng-container *ngIf="metric.icon === 'grid-down'">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
+          </ng-container>
+
+          <!-- Grid Up Icon -->
+          <ng-container *ngIf="metric.icon === 'grid-up'">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+          </ng-container>
+
+          <!-- Fallback/Default Icon (Home) -->
+          <ng-container *ngIf="!['solar', 'home', 'battery-down', 'battery-up', 'grid-down', 'grid-up'].includes(metric.icon)">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </ng-container>
+
+        </svg>
+      </div>
+
+      <!-- Title -->
+      <div>
+        <h3 [class]="'text-sm font-medium transition-colors duration-200 text-gray-300 group-hover:text-white'">
+          {{ metric.title }}
+        </h3>
+        <!-- Simple optimization status -->
+        <div *ngIf="isOptimized" class="text-xs text-green-400 font-medium">
+          {{ getOptimizationBadge() }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Trend Indicator (simplified) -->
+    <div *ngIf="metric.trend && metric.trendValue" class="flex items-center space-x-1">
+      <svg [class]="'w-4 h-4 ' + getTrendColor(metric.trend)" fill="none" stroke="currentColor" viewBox="0 0 24 24" [ngSwitch]="metric.trend">
+
+        <!-- Up Trend -->
+        <path *ngSwitchCase="'up'"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+
+        <!-- Down Trend -->
+        <path *ngSwitchCase="'down'"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/>
+
+        <!-- Neutral/Default Trend -->
+        <path *ngSwitchDefault
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M20 12H4"/>
+
+      </svg>
+      <span [class]="'text-xs font-medium ' + getTrendColor(metric.trend)">
+        {{ metric.trendValue > 0 ? '+' : '' }}{{ metric.trendValue }}%
+      </span>
+    </div>
+  </div>
+
+  <!-- Main Value (no complex animations) -->
+  <div class="mb-3">
+    <div class="flex items-baseline space-x-2">
+      <span [class]="'text-3xl font-bold transition-colors duration-200 text-white group-hover:text-teal-400'">
+        {{ metric.value | number:'1.1-1' }}
+      </span>
+      <span [class]="'text-lg font-medium text-gray-400'">
+        {{ metric.unit }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Description -->
+  <div *ngIf="metric.description"
+       [class]="'text-xs transition-colors duration-200 text-gray-500 group-hover:text-gray-400'">
+    {{ metric.description }}
+  </div>
+
+  <!-- Simple Progress Bar (no complex animations) -->
+  <div class="mt-4 h-1 bg-gray-700 rounded-full overflow-hidden">
+    <div
+      [class]="'h-full rounded-full transition-all duration-500 ease-out ' +
+               (metric.color.replace('text-', 'bg-'))"
+      [style.width.%]="(metric.value / 300) * 100">
+    </div>
+  </div>
+</div>

@@ -1,0 +1,102 @@
+
+.energy-flow-modern-container {
+  // Chart bars animation
+  .bar-enter {
+    animation: barGrowUp 0.8s ease-out forwards;
+    transform-origin: bottom;
+  }
+
+  @keyframes barGrowUp {
+    from {
+      transform: scaleY(0);
+      opacity: 0;
+    }
+    to {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+  }
+
+  // Smooth transitions for all interactive elements
+  * {
+    transition: all 0.2s ease-in-out;
+  }
+
+  // Enhanced button hover effects
+  button {
+    &:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0) scale(1.02);
+    }
+  }
+
+  // Chart container glow effect
+  .chart-container {
+    background: linear-gradient(135deg, #1f2937 0%, #0f172a 100%);
+    box-shadow:
+      0 0 50px rgba(59, 130, 246, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  // Tooltip improvements
+  .tooltip {
+    backdrop-filter: blur(10px);
+    background: rgba(17, 24, 39, 0.95);
+    border: 1px solid rgba(75, 85, 99, 0.5);
+  }
+
+  // Grid lines subtle animation
+  .grid-line {
+    opacity: 0.1;
+    transition: opacity 0.3s ease;
+
+    &:hover {
+      opacity: 0.3;
+    }
+  }
+
+  // Current hour indicator pulse
+  .current-indicator {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 5px rgba(6, 182, 212, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.8);
+    }
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    .grid-cols-4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .flex-wrap {
+      flex-direction: column;
+      align-items: stretch;
+
+      button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+
+  @media (max-width: 640px) {
+    .chart-container {
+      padding: 1rem;
+    }
+
+    .grid-cols-2 {
+      grid-template-columns: 1fr;
+    }
+  }
+}

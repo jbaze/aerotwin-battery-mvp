@@ -1,0 +1,92 @@
+
+<div class="bg-gray-900 border-b border-gray-700">
+  <div class="container mx-auto px-6">
+    <!-- Single Compact Header Row -->
+    <div class="flex items-center justify-between py-4">
+
+      <!-- Left Section: Logo + Property + Tabs -->
+      <div class="flex items-center space-x-6">
+        <!-- Back Arrow + Logo -->
+        <div class="flex items-center space-x-3">
+          <!-- <button class="text-gray-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-gray-800">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          </button> -->
+
+          <!-- AeroTwin Logo -->
+          <div class="text-xl font-bold text-teal-600">
+            AERO<span class="text-white">TWIN</span>
+          </div>
+        </div>
+
+        <!-- Property Name -->
+        <div class="hidden sm:block border-l border-gray-200 border-gray-700 pl-6">
+          <h1 class="text-lg font-semibold text-white">Grove House</h1>
+          <p class="text-xs text-gray-500 text-gray-400">Intelligent Battery System</p>
+        </div>
+
+        <!-- System/Device Tabs (Integrated) -->
+        <div class="flex bg-gray-100 bg-gray-800 rounded-full p-1 ml-6">
+          <!-- System Tab -->
+          <button
+            (click)="onTabClick('system')"
+            [class]="getTabClasses('system')"
+            class="focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-offset-gray-800"
+          >
+            <div class="flex items-center space-x-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              </svg>
+              <span class="hidden md:inline">System</span>
+            </div>
+          </button>
+
+          <!-- Device Tab -->
+          <button
+            (click)="onTabClick('device')"
+            [class]="getTabClasses('device')"
+            class="focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-offset-gray-800"
+          >
+            <div class="flex items-center space-x-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+              <span class="hidden md:inline">Device</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Section: Status + Time + Theme + Controls -->
+      <div class="flex items-center space-x-4">
+        <!-- Connection Status -->
+        <div class="flex items-center space-x-2">
+          <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+          <span class="text-sm text-gray-600 text-gray-300 hidden lg:inline">Connected</span>
+        </div>
+
+        <!-- Time Display -->
+        <div class="text-white font-medium text-lg hidden sm:block">
+          {{ getCurrentTime() }}
+        </div>
+
+        <!-- Active View Indicator (Mobile friendly) -->
+        <div class="hidden xl:flex items-center space-x-2 text-sm text-gray-500 text-gray-400 bg-gray-50 bg-gray-800 px-3 py-1 rounded-full">
+          <span class="text-xs">Viewing:</span>
+          <span class="text-teal-600 text-teal-400 font-medium capitalize text-xs">{{ activeTab }} Overview</span>
+        </div>
+
+        <!-- Theme Toggle -->
+        <!-- <app-theme-toggle></app-theme-toggle> -->
+
+        <!-- Settings/Menu Button -->
+        <!-- <button class="text-gray-400 text-gray-400 hover:text-gray-600 hover:text-white transition-colors p-2 rounded-lg hover:bg-gray-100 hover:bg-gray-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+          </svg>
+        </button> -->
+      </div>
+    </div>
+  </div>
+</div>
